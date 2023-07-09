@@ -1,3 +1,4 @@
+import 'package:calcit/utils/display_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/AppTheme.dart';
@@ -13,7 +14,6 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -30,9 +30,9 @@ class HomePageState extends State<HomePage> {
             child: GestureDetector(
               onTap: () => appTheme.toggleTheme(),
               child: Icon(
-                appTheme.isDarkTheme ? Icons.mode_night_sharp : Icons.sunny,
+                appTheme.isLightTheme ? Icons.mode_night_sharp : Icons.sunny,
                 size: 30,
-                color: appTheme.isDarkTheme
+                color: appTheme.isLightTheme
                     ? Theme.of(context).primaryColorDark
                     : Theme.of(context).primaryColorLight,
               ),
@@ -43,13 +43,13 @@ class HomePageState extends State<HomePage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: appTheme.isDarkTheme
+        color: appTheme.isLightTheme
             ? Theme.of(context).primaryColorLight
             : Theme.of(context).primaryColorDark,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text("body"),
+            DisplayWidget(),
           ],
         ),
       ),
@@ -58,11 +58,11 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-
 }
 
 class ButtonBottomSheet extends StatefulWidget {
   final double _height;
+
   ButtonBottomSheet({super.key, required double height}) : _height = height;
 
   @override
@@ -71,6 +71,7 @@ class ButtonBottomSheet extends StatefulWidget {
 
 class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
   late double _height;
+  final double _minHeight = 50;
   bool _opened = true;
   Widget buttonContainer = SizedBox();
 
@@ -83,23 +84,33 @@ class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: appTheme.isDarkTheme
+      color: appTheme.isLightTheme
           ? Theme.of(context).primaryColorLight
           : Theme.of(context).primaryColorDark,
       child: GestureDetector(
-        onVerticalDragUpdate: (details) {
+        onVerticalDragEnd: (details) {
+          double _fraction = 0.1;
           if (mounted) {
             setState(() {
-              _opened = details.delta.dy < 0;
-              _height = _opened ? widget._height : 50;
+              if (_opened && _height >= widget._height * _fraction) {
+                _height = widget._height;
+              } else if (!_opened &&
+                  _height < widget._height * (1 - _fraction)) {
+                _height = _minHeight;
+              }
+
+              _opened = _height == widget._height;
             });
           }
         },
-        onDoubleTap: () {
+        onVerticalDragUpdate: (details) {
           if (mounted) {
             setState(() {
-              _height = _opened ? 50 : widget._height;
-              _opened = !_opened;
+              _height = _height - details.delta.dy;
+              if (_height > widget._height || _height < _minHeight) {
+                _height = _opened ? widget._height : _minHeight;
+              }
+              _opened = details.delta.dy < 0;
             });
           }
         },
@@ -113,27 +124,29 @@ class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30))),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // For Horizontal Line
-                Container(
-                  height: 5,
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Theme.of(context).primaryColorLight),
-                ),
-                // buttonContainer,
-                // Buttons
-                !_opened
-                    ? SizedBox()
-                    : Container(
-                        child: ButtonsContainer(
-                          height: MediaQuery.of(context).size.height * 0.6,
-                        ),
-                      )
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // For Horizontal Line
+                  Container(
+                    height: 5,
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Theme.of(context).primaryColorLight),
+                  ),
+                  // Buttons
+
+                  _height == _minHeight
+                      ? SizedBox()
+                      : Container(
+                          child: ButtonsContainer(
+                            height: _height * 0.9,
+                          ),
+                        )
+                ],
+              ),
             )),
       ),
     );

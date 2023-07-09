@@ -1,6 +1,8 @@
 import 'package:calcit/constants/AppTheme.dart';
+import 'package:calcit/models/displayText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class ButtonsContainer extends StatefulWidget {
   final double _height;
@@ -11,57 +13,69 @@ class ButtonsContainer extends StatefulWidget {
 }
 
 class _ButtonsContainerState extends State<ButtonsContainer> {
+  List<Row> buttonList = [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        NumberButton(buttonData: "7"),
+        NumberButton(buttonData: "8"),
+        NumberButton(buttonData: "9"),
+        NumberButton(buttonData: "AC"),
+        NumberButton.withIcon(Icons.backspace),
+      ],
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        NumberButton(buttonData: "4"),
+        NumberButton(buttonData: "5"),
+        NumberButton(buttonData: "6"),
+        NumberButton(buttonData: "x"),
+        NumberButton(buttonData: "÷"),
+      ],
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        NumberButton(buttonData: "1"),
+        NumberButton(buttonData: "2"),
+        NumberButton(buttonData: "3"),
+        NumberButton(buttonData: "+"),
+        NumberButton(buttonData: "-"),
+      ],
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        NumberButton(buttonData: "0"),
+        NumberButton(buttonData: "00"),
+        NumberButton(buttonData: "."),
+        NumberButton(buttonData: "Ans"),
+        NumberButton.withBackground("="),
+      ],
+    )
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: widget._height,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            NumberButton(buttonData: "7"),
-            NumberButton(buttonData: "8"),
-            NumberButton(buttonData: "9"),
-            NumberButton(buttonData: "AC"),
-            NumberButton.withIcon(Icons.backspace),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            NumberButton(buttonData: "4"),
-            NumberButton(buttonData: "5"),
-            NumberButton(buttonData: "6"),
-            NumberButton(buttonData: "x"),
-            NumberButton(buttonData: "÷"),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            NumberButton(buttonData: "1"),
-            NumberButton(buttonData: "2"),
-            NumberButton(buttonData: "3"),
-            NumberButton(buttonData: "+"),
-            NumberButton(buttonData: "-"),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            NumberButton(buttonData: "0"),
-            NumberButton(buttonData: "00"),
-            NumberButton(buttonData: "."),
-            NumberButton(buttonData: "Ans"),
-            NumberButton.withBackground("="),
-          ],
-        )
-      ]),
-    );
+        height: widget._height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: buttonList,
+          ),
+        ));
+
+    // // children: buttonList
+
+    // ListView.builder(
+    //   addAutomaticKeepAlives: false,
+    //     itemCount: buttonList.length,
+    //     itemBuilder: (context, index) {
+    //       return buttonList[index];
+    //     }));
   }
 }
-
 
 // ignore: must_be_immutable
 class NumberButton extends StatefulWidget {
@@ -90,9 +104,9 @@ class NumberButton extends StatefulWidget {
 
 class NumberButtonState extends State<NumberButton> {
   late Color _themeColor =
-      appTheme.isDarkTheme ? lightTheme.primaryColor : darkTheme.primaryColor;
+      appTheme.isLightTheme ? lightTheme.primaryColor : darkTheme.primaryColor;
   late Color _reverseThemeColor =
-      appTheme.isDarkTheme ? darkTheme.primaryColor : lightTheme.primaryColor;
+      appTheme.isLightTheme ? darkTheme.primaryColor : lightTheme.primaryColor;
 
   @override
   void initState() {
@@ -100,11 +114,11 @@ class NumberButtonState extends State<NumberButton> {
     appTheme.addListener(() {
       if (mounted) {
         setState(() {
-          _themeColor = appTheme.isDarkTheme
+          _themeColor = appTheme.isLightTheme
               ? lightTheme.primaryColor
               : darkTheme.primaryColor;
 
-          _reverseThemeColor = appTheme.isDarkTheme
+          _reverseThemeColor = appTheme.isLightTheme
               ? darkTheme.primaryColor
               : lightTheme.primaryColor;
         });
@@ -112,15 +126,39 @@ class NumberButtonState extends State<NumberButton> {
     });
   }
 
-
-
-  
-
-
   @override
   Widget build(BuildContext context) {
     return TextButton(
-        onPressed: () {},
+        onPressed: () {
+          if (widget._buttonData == null) {
+            // BACKSPACE
+            if (widget._iconData == Icons.backspace) {
+              context.read<DisplayText>().backspaceQuery();
+            }
+            return;
+          }
+
+          // Calculate
+          if (widget._buttonData == "=") {
+            context.read<DisplayText>().calculateQuery();
+            return;
+          }
+
+          // ALL CLEAR
+          if (widget._buttonData == "AC") {
+            context.read<DisplayText>().clearQuery();
+            return;
+          }
+
+          // deal with ans
+          if (widget._buttonData == "Ans") {
+            context.read<DisplayText>().copyAnswerToQuery();
+            return;
+          }
+
+          // Edit Query
+          context.read<DisplayText>().appendQuery(widget._buttonData!);
+        },
         style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(5)),
             backgroundColor: MaterialStateProperty.all<Color?>(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 List<Color> colorList = [
   Color.fromRGBO(31, 31, 31, 1),
@@ -9,6 +10,7 @@ List<Color> colorList = [
 ];
 
 ThemeData lightTheme = ThemeData(
+  fontFamily: GoogleFonts.rajdhani().fontFamily,
   primaryColor: Color.fromRGBO(31, 31, 31, 1),
   primaryColorDark: Color.fromRGBO(80, 80, 80, 1),
   primaryColorLight: Color.fromRGBO(190, 190, 190, 1),
@@ -16,6 +18,7 @@ ThemeData lightTheme = ThemeData(
 );
 
 ThemeData darkTheme = ThemeData(
+  fontFamily: GoogleFonts.rajdhani().fontFamily,
   primaryColor: Color.fromRGBO(251, 251, 251, 1),
   primaryColorDark: Color.fromRGBO(80, 80, 80, 1),
   primaryColorLight: Color.fromRGBO(190, 190, 190, 1),
@@ -23,12 +26,14 @@ ThemeData darkTheme = ThemeData(
 );
 
 class AppTheme with ChangeNotifier {
-  bool isDarkTheme = false;
+  bool isLightTheme = false;
+  ThemeData theme = darkTheme;
 
-  ThemeMode get themeMode => isDarkTheme ? ThemeMode.dark : ThemeMode.light;
+  ThemeMode get themeMode => isLightTheme ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {
-    isDarkTheme = !isDarkTheme;
+    isLightTheme = !isLightTheme;
+    theme = isLightTheme ? lightTheme : darkTheme;
     notifyListeners();
   }
 }
