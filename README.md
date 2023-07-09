@@ -1,2 +1,7 @@
+<div align="center">
+  
 # CalcIt
-A Flutter based Scientific Calculator
+  
+</div>
+
+> A Scientific Calculator application built using Flutter
