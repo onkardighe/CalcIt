@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DisplayWidget extends StatefulWidget {
-  // double _heightMultiplier = 0.9;
   const DisplayWidget({super.key});
 
   @override
@@ -14,6 +13,7 @@ class DisplayWidget extends StatefulWidget {
 class _DisplayWidgetState extends State<DisplayWidget> {
   @override
   void initState() {
+    super.initState();
     appTheme.addListener(() {
       setState(() {});
     });

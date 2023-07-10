@@ -11,25 +11,25 @@ List<Color> colorList = [
 
 ThemeData lightTheme = ThemeData(
   fontFamily: GoogleFonts.rajdhani().fontFamily,
-  primaryColor: Color.fromRGBO(31, 31, 31, 1),
-  primaryColorDark: Color.fromRGBO(80, 80, 80, 1),
+  colorScheme: ColorScheme.light(background: Colors.blueGrey.shade200),
+  primaryColor: const Color.fromRGBO(31, 31, 31, 1),
+  primaryColorDark: Color.fromRGBO(145, 145, 145, 1),
   primaryColorLight: Color.fromRGBO(190, 190, 190, 1),
-  backgroundColor: Color.fromRGBO(251, 251, 251, 1),
 );
 
 ThemeData darkTheme = ThemeData(
   fontFamily: GoogleFonts.rajdhani().fontFamily,
+  colorScheme: ColorScheme.dark(background: Colors.grey.shade700),
   primaryColor: Color.fromRGBO(251, 251, 251, 1),
   primaryColorDark: Color.fromRGBO(80, 80, 80, 1),
   primaryColorLight: Color.fromRGBO(190, 190, 190, 1),
-  backgroundColor: Color.fromRGBO(31, 31, 31, 1),
 );
 
 class AppTheme with ChangeNotifier {
   bool isLightTheme = false;
   ThemeData theme = darkTheme;
 
-  ThemeMode get themeMode => isLightTheme ? ThemeMode.dark : ThemeMode.light;
+  ThemeMode get themeMode => isLightTheme ? ThemeMode.light : ThemeMode.dark;
 
   void toggleTheme() {
     isLightTheme = !isLightTheme;

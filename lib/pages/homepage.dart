@@ -1,3 +1,4 @@
+import 'package:calcit/utils/color_utils.dart';
 import 'package:calcit/utils/display_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -43,10 +44,8 @@ class HomePageState extends State<HomePage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        color: appTheme.isLightTheme
-            ? Theme.of(context).primaryColorLight
-            : Theme.of(context).primaryColorDark,
-        child: Column(
+        color: Theme.of(context).colorScheme.background,
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             DisplayWidget(),
@@ -63,7 +62,8 @@ class HomePageState extends State<HomePage> {
 class ButtonBottomSheet extends StatefulWidget {
   final double _height;
 
-  ButtonBottomSheet({super.key, required double height}) : _height = height;
+  const ButtonBottomSheet({super.key, required double height})
+      : _height = height;
 
   @override
   State<ButtonBottomSheet> createState() => _ButtonBottomSheetState();
@@ -84,9 +84,8 @@ class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: appTheme.isLightTheme
-          ? Theme.of(context).primaryColorLight
-          : Theme.of(context).primaryColorDark,
+      padding: EdgeInsets.only(top: 5),
+      color: Theme.of(context).colorScheme.background,
       child: GestureDetector(
         onVerticalDragEnd: (details) {
           double _fraction = 0.1;
@@ -118,12 +117,22 @@ class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
             height: _height,
             width: MediaQuery.of(context).size.width,
-            duration: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: 150),
             decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30))),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 10,
+                  offset: Offset.zero,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .background
+                      .mix(Colors.black, .3)!,
+                )
+              ],
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+              color: Theme.of(context).colorScheme.background,
+            ),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,7 +143,7 @@ class _ButtonBottomSheetState extends State<ButtonBottomSheet> {
                     width: MediaQuery.of(context).size.width * 0.3,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Theme.of(context).primaryColorLight),
+                        color: Theme.of(context).primaryColorDark),
                   ),
                   // Buttons
 

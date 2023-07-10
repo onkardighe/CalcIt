@@ -2,7 +2,7 @@ import 'package:calcit/utils/calculator.dart';
 import 'package:flutter/material.dart';
 
 class DisplayText extends ChangeNotifier {
-  String _answerText = "Onkar";
+  String _answerText = "0";
   String _queryText = "0";
 
   String get answerText => _answerText;
@@ -54,7 +54,7 @@ class DisplayText extends ChangeNotifier {
   }
 
   copyAnswerToQuery() {
-    if (_answerText != 0) {
+    if (_answerText != "0") {
       _queryText = "Ans";
     }
     notifyListeners();

@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:math_expressions/math_expressions.dart';
 
 abstract class Calculator {
@@ -10,10 +9,10 @@ class CalculateFromString extends Calculator {
   String calculate({required String query}) {
     query = query.replaceAll("x", "*").replaceAll("÷", "/");
 
+  
     Parser parser = Parser();
     Expression expression = parser.parse(query);
     ContextModel cm = ContextModel();
     return expression.evaluate(EvaluationType.REAL, cm).toString();
-    // return "This is AnsWer ";
   }
 }
